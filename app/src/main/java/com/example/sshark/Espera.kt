@@ -65,26 +65,47 @@ class Espera : AppCompatActivity() {
             .get()
             .addOnSuccessListener { resultado ->
                 val delim = "-"
-                val instant = Date()
+
                 val cal = Calendar.getInstance()
+                cal.add(Calendar.HOUR,-5)
+                val instant = cal.time
+
                 val year = cal[Calendar.YEAR]
+                println(year)
 
-                val veda_inicio = resultado["veda_inicio"].toString()
-                val veda_inicio_split = veda_inicio.split(delim)
-                val veda_inicio_dia = veda_inicio_split[0]
-                val veda_inicio_mes = veda_inicio_split[1]
+                //val veda_inicio = resultado["veda_inicio"].toString()
+                //println(veda_inicio)
+                //val veda_inicio_split = veda_inicio.split(delim)
+                //println(veda_inicio_split)
+                //val veda_inicio_dia = veda_inicio_split[0]
+                //println(veda_inicio_dia)
+                //val veda_inicio_mes = veda_inicio_split[1]
+                //println(veda_inicio_mes)
 
-                val veda_fin = resultado["veda_fin"].toString()
-                val veda_fin_split = veda_fin.split(delim)
-                val veda_fin_dia = veda_fin_split[0]
-                val veda_fin_mes = veda_fin_split[1]
 
+                //val veda_fin = resultado["veda_fin"].toString()
+                //val veda_fin_split = veda_fin.split(delim)
+                //val veda_fin_dia = veda_fin_split[0]
+                //val veda_fin_mes = veda_fin_split[1]
 
+                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+
+                //val veda = veda_inicio_dia + "/" + veda_inicio_mes + "/" + year
+                val veda = "20" + "/" + "12" + "/" + "2022"
+                //FECHA FIN AUMENTAR UN DÍA
+                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                val sdf = SimpleDateFormat("dd/MM/yyyy")
+                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+
+                val veda_prueba = sdf.parse(veda)
+                //val veda_new = veda_prueba.format(Date())
                 //val veda = new Date.of(year,veda_inicio_mes,veda_inicio_dia)
 
-
-                val dateFormat = SimpleDateFormat("d MMM yyyy, EEE, HH:mm:ss z")
-                val date = dateFormat.format(Date())
+                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                println(instant)
+                println(veda_prueba)
+                val prueba = instant.compareTo(veda_prueba)
+                println(prueba)
 
                 val intento1 = Intent(this, Respuesta::class.java)
                 intento1.putExtra("nombre", resultado["nombre"].toString() );
