@@ -23,13 +23,32 @@ import java.io.ByteArrayOutputStream
 class MainActivity : AppCompatActivity() {
 
     private lateinit var buttonDorsal : ImageButton
+    private lateinit var buttonPectoral : ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_principal)
 
         buttonDorsal = findViewById(R.id.imageButton6)
+        buttonPectoral = findViewById(R.id.imageButton7)
+
         buttonDorsal.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                val intento1 = Intent(this, Espera::class.java)
+                startActivity(intento1)
+                //takePicturePreview.launch(null)
+            } else {
+                requestPermission.launch(Manifest.permission.CAMERA)
+            }
+
+            //val intento = Intent(this, Principal::class.java)
+            //startActivity(intento)
+        }
+
+        buttonPectoral.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED
             ) {
@@ -53,6 +72,10 @@ class MainActivity : AppCompatActivity() {
         }else {
             Toast.makeText(this, "Permiso denegado!! Intentalo denuevo", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onBackPressed() {
+        finishAffinity()
     }
 
 }

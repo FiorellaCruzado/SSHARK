@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sshark.ml.ModeloTiburonPrueba
+import com.example.sshark.ml.RedAletas
 import com.google.firebase.firestore.FirebaseFirestore
 import org.tensorflow.lite.support.image.TensorImage
 import java.io.ByteArrayOutputStream
@@ -29,7 +30,7 @@ class Espera : AppCompatActivity() {
 
     private fun outputGenerator(bitmap: Bitmap){
         //declearing tensor flow lite model variable
-        val model = ModeloTiburonPrueba.newInstance(this)
+        val model = RedAletas.newInstance(this)
         //val model = BirdsModel.newInstance(this)
 
         // converting bitmap into tensor flow image
@@ -52,19 +53,20 @@ class Espera : AppCompatActivity() {
 
         val db : FirebaseFirestore = FirebaseFirestore.getInstance()
         var valor = highProbabilityOutput.label
-        println("ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+        println("ooooooooooooooooooooooooooooooooooooooVALORooooooooooooooooooooooooooooooooooooooooo")
         println(valor)
+
         val stream = ByteArrayOutputStream()
         // Compress the bitmap with JPEG format and specified quality
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val byteArray = stream.toByteArray()
-        println(byteArray)
 
         db.collection("sSharkBase")
             .document(valor.toString())
             .get()
             .addOnSuccessListener { resultado ->
                 val delim = "-"
+                var veda = "NO"
 
                 val cal = Calendar.getInstance()
                 cal.add(Calendar.HOUR,-5)
@@ -73,44 +75,41 @@ class Espera : AppCompatActivity() {
                 val year = cal[Calendar.YEAR]
                 println(year)
 
-                //val veda_inicio = resultado["veda_inicio"].toString()
-                //println(veda_inicio)
-                //val veda_inicio_split = veda_inicio.split(delim)
-                //println(veda_inicio_split)
-                //val veda_inicio_dia = veda_inicio_split[0]
-                //println(veda_inicio_dia)
-                //val veda_inicio_mes = veda_inicio_split[1]
-                //println(veda_inicio_mes)
+                val veda_inicio_base = resultado["veda_inicio"].toString()
+                val veda_fin_base = resultado["veda_fin"].toString()
 
+                if (veda_inicio_base != "" && veda_fin_base != "") {
 
-                //val veda_fin = resultado["veda_fin"].toString()
-                //val veda_fin_split = veda_fin.split(delim)
-                //val veda_fin_dia = veda_fin_split[0]
-                //val veda_fin_mes = veda_fin_split[1]
+                    val veda_inicio_split = veda_inicio_base.split(delim)
+                    val veda_inicio_dia = veda_inicio_split[0]
+                    val veda_inicio_mes = veda_inicio_split[1]
 
-                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                    val veda_fin_split = veda_fin_base.split(delim)
+                    val veda_fin_dia = (veda_fin_split[0].toInt() + 1).toString()
+                    val veda_fin_mes = veda_fin_split[1]
 
-                //val veda = veda_inicio_dia + "/" + veda_inicio_mes + "/" + year
-                val veda = "20" + "/" + "12" + "/" + "2022"
-                //FECHA FIN AUMENTAR UN DÍA
-                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                val sdf = SimpleDateFormat("dd/MM/yyyy")
-                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                    val veda_inicio_string = veda_inicio_dia + "/" + veda_inicio_mes + "/" + year
+                    val veda_fin_string = veda_fin_dia + "/" + veda_fin_mes + "/" + year
 
-                val veda_prueba = sdf.parse(veda)
-                //val veda_new = veda_prueba.format(Date())
-                //val veda = new Date.of(year,veda_inicio_mes,veda_inicio_dia)
+                    val sdf = SimpleDateFormat("dd/MM/yyyy")
+                    val veda_inicio = sdf.parse(veda_inicio_string)
+                    val veda_fin = sdf.parse(veda_fin_string)
 
-                println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                println(instant)
-                println(veda_prueba)
-                val prueba = instant.compareTo(veda_prueba)
-                println(prueba)
+                    println(instant)
+                    println(veda_inicio)
+                    println(veda_fin)
+                    println(instant.compareTo(veda_inicio))
+                    println(instant.compareTo(veda_fin))
+
+                    if (instant.compareTo(veda_inicio)>=0 && instant.compareTo(veda_fin)<=0) {
+                        veda = "SI"
+                    }
+                }
 
                 val intento1 = Intent(this, Respuesta::class.java)
                 intento1.putExtra("nombre", resultado["nombre"].toString() );
                 intento1.putExtra("protegido", resultado["protegido"].toString());
-                intento1.putExtra("veda", year.toString() );
+                intento1.putExtra("veda", veda);
                 intento1.putExtra("imagen",byteArray)
                 startActivity(intento1)
             }

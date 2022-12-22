@@ -40,6 +40,7 @@
 
     <TextView
         android:id="@+id/textView"
+        android:textSize="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -54,7 +55,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="24dp"
         android:text="Protegido (CITES)"
         android:textColor="@color/white"
@@ -94,10 +95,13 @@
         android:id="@+id/button"
         android:layout_width="199dp"
         android:layout_height="41dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="28dp"
         android:text="CONTINUAR"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3" />
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
